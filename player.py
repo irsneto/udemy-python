@@ -5,3 +5,4 @@ class Player:
         self.monster_defeated: int = 0
         self.xp: int = 0
         self.turns: int = 0
+        self.inventory: list = []

@@ -2,6 +2,7 @@ from colorama import Fore
 from player import Player
 from room import Room
 from macro import Game
+from prettytable import PrettyTable
 
 import bestiary
 import armory
@@ -50,14 +51,17 @@ def explore_lab(current_game: Game):
         room = generate_room()
 
         current_game.room = room 
-        current_game.room.print_description()
         player_input = get_input()
 
-        if player_input == "help":
+        if player_input == "inventory":
+            show_inventory(current_game)
+
+        elif player_input == "help":
             show_help()
 
         elif player_input in ["n", "s", "e", "w"]:
             print(f"{Fore.CYAN}You move deeper into the dungeon")
+            current_game.room.print_description()
 
             for i in current_game.room.items:
                 print(f"{Fore.LIGHTGREEN_EX}You found an new Item: {i['name']}" )
@@ -124,3 +128,22 @@ def get_yn(question):
                 answer = "no"
             return answer
 
+
+def show_inventory(current_game: Game):
+
+    if len(current_game.player.inventory) > 0:
+        table = PrettyTable(['Item', 'Type', 'Damage'])
+        for i in current_game.player.inventory:
+            for x, obj in i.items():
+                table.add_row([obj["name"], obj["type"], obj["max_damage"] ])
+    
+        print(f"{Fore.BLUE}{table}")
+    
+    else:
+         print(f"{Fore.BLUE}There are valuable things out there, go find some")
+        
+               
+
+
+    
+    #print(myfamily["child2"]["name"])
