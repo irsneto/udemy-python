@@ -6,3 +6,14 @@ class Player:
         self.xp: int = 0
         self.turns: int = 0
         self.inventory: list = []
+        self.max_itens: int = 5
+        
+
+    def add_item(self, item: dict) -> bool:
+        if not self.is_inventory_full():
+            self.inventory.append(item)
+            return True
+
+
+    def is_inventory_full(self):
+        return len(self.inventory) == self.max_itens

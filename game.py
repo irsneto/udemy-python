@@ -48,23 +48,26 @@ def generate_room() -> Room:
 
 def explore_lab(current_game: Game):
     while True:
-        room = generate_room()
-
-        current_game.room = room 
         player_input = get_input()
 
-        if player_input == "inventory":
+        if player_input.startswith("get"):
+            get_item(current_game, player_input)
+
+        elif player_input == "inventory" or player_input == "inv":
             show_inventory(current_game)
+            continue
 
         elif player_input == "help":
             show_help()
+            continue
 
         elif player_input in ["n", "s", "e", "w"]:
             print(f"{Fore.CYAN}You move deeper into the dungeon")
+            current_game.room = generate_room()
             current_game.room.print_description()
 
             for i in current_game.room.items:
-                print(f"{Fore.LIGHTGREEN_EX}You found an new Item: {i['name']}" )
+                print(f"{Fore.LIGHTGREEN_EX}You found a new Item: {i['name']}" )
 
             if current_game.room.monster:
                 print(f"{Fore.RED}D A N G E R ")
@@ -73,7 +76,7 @@ def explore_lab(current_game: Game):
             continue
 
         elif player_input == "quit":
-            print ("Flew away")
+            print ("Is that your best?")
 
             # Print final score
             
@@ -81,7 +84,7 @@ def explore_lab(current_game: Game):
             play_again()
 
         else:
-            print("xiii")
+            print("Can't get your thoughts")
 
 
 def play_again():
@@ -132,18 +135,24 @@ def get_yn(question):
 def show_inventory(current_game: Game):
 
     if len(current_game.player.inventory) > 0:
-        table = PrettyTable(['Item', 'Type', 'Damage'])
+        table = PrettyTable(['Item', 'Type'])
         for i in current_game.player.inventory:
             for x, obj in i.items():
-                table.add_row([obj["name"], obj["type"], obj["max_damage"] ])
+                table.add_row([obj["name"], obj["type"]])
     
-        print(f"{Fore.BLUE}{table}")
+        print(f"{Fore.BLUE}{table.get_string()}")
     
     else:
          print(f"{Fore.BLUE}There are valuable things out there, go find some")
-        
-               
 
 
-    
-    #print(myfamily["child2"]["name"])
+def get_item(current_game: Game, item_name: str):
+    if current_game.room.items:
+        item = current_game.room.items.pop()
+        item_dict = {item['name']: item}
+        if current_game.player.add_item(item_dict):
+            print(f"{Fore.CYAN}{item['name']} added to your inventory adventurer")
+        else:
+            print(f"{Fore.RED}My bag is full")
+    else: 
+        print("You can't get what does not exist")
